@@ -1,0 +1,13 @@
+---
+# defaults file for roles/kube
+
+docker_packages:
+  - "yum-utils"
+  - "device-mapper-persistent-data"
+  - "lvm2"
+  - "docker-ce"
+
+kube_packages:
+  - "kubelet"
+  - "kubeadm"
+  - "kubectl"

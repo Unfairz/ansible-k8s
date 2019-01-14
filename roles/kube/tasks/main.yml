@@ -1,0 +1,64 @@
+---
+# tasks file for roles/kube
+
+- name: add kubernetes repo
+  yum_repository:
+    name: Kubernetes
+    description: Kubernetes Repository
+    file: kubernetes
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-$basearch
+    enabled: yes
+    gpgcheck: yes
+    repo_gpgcheck: yes
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+ 
+- name: install the kube packages packages
+  yum:
+    name: "{{ kube_packages }}"
+    state: "installed"
+  with_items: "{{ kube_packages }}"
+
+- name: Disable selinux
+  lineinfile:
+    destfile: /etc/selinux/config
+    regexp: '^SELINUX='
+    line: 'SELINUX=disabled'
+
+- name: Enable br_netfilter
+  raw: modprobe br_netfilter && echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
+
+- name: add docker-ce-stable repo
+  yum_repository:
+    name: docker-ce-stable
+    description: docker-ce stable repo
+    file: docker-ce-stable
+    baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+    enabled: yes
+    gpgcheck: yes
+    repo_gpgcheck: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+
+- name: Install Docker Pakages
+  yum:
+    name: "{{ docker_packages }}"
+    state: "installed"
+  with_items: "{{ docker_packages }}"
+
+- name: Change cgroup-driver in kubelet
+  replace:
+    dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    regexp: 'cgroup-driver=systemd'
+    replace: 'cgroup-driver=cgroupfs'
+  notify: deamon_reload
+
+- name: Start docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Start kubelet service
+  service:
+    name: kubelet
+    state: started
+    enabled: yes

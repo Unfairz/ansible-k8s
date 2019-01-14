@@ -1,0 +1,7 @@
+---
+# handlers file for roles/kube
+ 
+- name: "daemon_reload"
+  systemd:
+    name: reload
+    daemon_reload: yes

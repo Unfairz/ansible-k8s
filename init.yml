@@ -1,0 +1,11 @@
+---
+
+- hosts: k8s-cluster
+  gather_facts: true
+
+  vars_files:
+    - group_vars/common.yml
+
+  roles:
+    - roles/common
+    - roles/kube

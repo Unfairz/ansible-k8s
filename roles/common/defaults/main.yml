@@ -1,0 +1,11 @@
+---
+# defaults file for roles/common
+
+common_packages:
+  - "htop"
+  - "nano"
+  - "vim-enhanced"
+  - "git"
+  - "unzip"
+  - "policycoreutils-python"
+  - "epel-release"

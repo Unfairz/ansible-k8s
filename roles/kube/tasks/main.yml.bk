@@ -1,0 +1,46 @@
+---
+# tasks file for roles/kube
+
+- name: copy the kube repo file to /etc/yum.repos.d/kubernetes.repo
+  copy:
+    src: "kubernetes.repo"
+    dest: /etc/yum.repos.d/kubernetes.repo
+ 
+- name: install the kube packages packages
+  yum:
+    name: "{{ kube_packages }}"
+    state: "installed"
+  with_items: "{{ kube_packages }}"
+
+- name: disabling SELinux
+  shell: setenforce 0 && sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+
+- name: Enable br_netfilter
+  shell: modprobe br_netfilter && echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
+
+- name: copy the docker-ce repo file to /etc/yum.repos.d/docker-ce.repo
+  copy:
+    src: "docker-ce.repo"
+    dest: /etc/yum.repos.d/docker-ce.repo
+
+- name: Install Docker Pakages
+  yum:
+    name: "{{ docker_packages }}"
+    state: "installed"
+  with_items: "{{ docker_packages }}"
+
+- name: Cgroup changes
+  shell: sed -i 's/cgroup-driver=systemd/cgroup-driver=cgroupfs/g' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+  notify: "daemon_reload"
+
+- name: Start docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Start kubelet service
+  service:
+    name: kubelet
+    state: started
+    enabled: yes
