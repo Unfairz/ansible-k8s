@@ -4,9 +4,9 @@ master ansible_user=root ansible_host=192.168.122.100 ansible_port=22
 
 [nodes]
 
-kube1 ansible_user=root ansible_host=192.168.122.101 ansible_port=22
-kube2 ansible_user=root ansible_host=192.168.122.102 ansible_port=22
-kube3 ansible_user=root ansible_host=192.168.122.103 ansible_port=22
+node1 ansible_user=root ansible_host=192.168.122.101 ansible_port=22
+node2 ansible_user=root ansible_host=192.168.122.102 ansible_port=22
+node3 ansible_user=root ansible_host=192.168.122.103 ansible_port=22
 
 [k8s-cluster:children]
 

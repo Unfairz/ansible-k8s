@@ -8,4 +8,6 @@ common_packages:
   - "git"
   - "unzip"
   - "policycoreutils-python"
-  - "epel-release"
+  - "net-tools"
+  - "wget"
+  - "iptables-services"
