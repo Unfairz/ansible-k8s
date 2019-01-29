@@ -28,7 +28,6 @@
     state: "installed"
   with_items: "{{ common_packages }}"
 
-
 - name: Start and Enable iptables
   systemd:
     name: iptables
